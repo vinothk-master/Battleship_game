@@ -87,31 +87,31 @@ class GridA:
     def update_message(self, message):
         self.messsage_label.config(text=message)
 
-    def toss_coin(self, guess):
-        
-        result = choice(["Heads", "Tails"])
-        self.result = result  # Store the result for the second attempt
-
-        if guess == result:
-            suggestion_label.config(text="Correct! You guessed right.")
-        else:
-            suggestion_label.config(text="Wrong guess. Better luck next time.")
-
-        result_label.config(text=f"Result: {result}")
-
-        # Create and configure widgets using the grid geometry manager
-        suggestion_label = tk.Label(root, text="Select your suggestion:")
-        suggestion_label.grid(row=0, column=0, pady=5)
-
-        # Create suggestion buttons
-        head_button = tk.Button(root, text="Heads", command=lambda: self.toss_coin("Heads"))
-        head_button.grid(row=0, column=1, pady=5)
-
-        tail_button = tk.Button(root, text="Tails", command=lambda: self.toss_coin("Tails"))
-        tail_button.grid(row=0, column=2, pady=5)
-
-        result_label = tk.Label(root, text="Result: ")
-        result_label.grid(row=0, column=3, pady=10)
+    #def toss_coin(self, guess):
+    #    
+    #    result = choice(["Heads", "Tails"])
+    #    self.result = result  # Store the result for the second attempt
+#
+    #    if guess == result:
+    #        suggestion_label.config(text="Correct! You guessed right.")
+    #    else:
+    #        suggestion_label.config(text="Wrong guess. Better luck next time.")
+#
+    #    result_label.config(text=f"Result: {result}")
+#
+    #    # Create and configure widgets using the grid geometry manager
+    #    suggestion_label = tk.Label(root, text="Select your suggestion:")
+    #    suggestion_label.grid(row=0, column=0, pady=5)
+#
+    #    # Create suggestion buttons
+    #    head_button = tk.Button(root, text="Heads", command=lambda: self.toss_coin("Heads"))
+    #    head_button.grid(row=0, column=1, pady=5)
+#
+    #    tail_button = tk.Button(root, text="Tails", command=lambda: self.toss_coin("Tails"))
+    #    tail_button.grid(row=0, column=2, pady=5)
+#
+    #    result_label = tk.Label(root, text="Result: ")
+    #    result_label.grid(row=0, column=3, pady=10)
  
     def erase_message(self):
         self.label.config(text="")
