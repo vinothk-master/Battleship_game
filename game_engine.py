@@ -47,11 +47,13 @@ class Matrix:
 
     def reset(self):
         self.clicked = False
-class Testing_GridA:
+class Testing_GridA:#TO test the battleship game 
     def __init__(self):
         self.ships = ships = []
     def ship_add(self, val):
         self.ships.append(val)
+        print("Executing the line")
+
     def ship_size(self):
         print("the length of the ship is : ", len(self.ships))
         return len(self.ships)
