@@ -47,7 +47,14 @@ class Matrix:
 
     def reset(self):
         self.clicked = False
-
+class Testing_GridA:
+    def __init__(self):
+        self.ships = ships = []
+    def ship_add(self, val):
+        self.ships.append(val)
+    def ship_size(self):
+        print("the length of the ship is : ", len(self.ships))
+        return len(self.ships)
 
 class GridA:
     def __init__(self, root, player_ship_positions, coin_toss_winner):
@@ -87,31 +94,6 @@ class GridA:
     def update_message(self, message):
         self.messsage_label.config(text=message)
 
-    #def toss_coin(self, guess):
-    #    
-    #    result = choice(["Heads", "Tails"])
-    #    self.result = result  # Store the result for the second attempt
-#
-    #    if guess == result:
-    #        suggestion_label.config(text="Correct! You guessed right.")
-    #    else:
-    #        suggestion_label.config(text="Wrong guess. Better luck next time.")
-#
-    #    result_label.config(text=f"Result: {result}")
-#
-    #    # Create and configure widgets using the grid geometry manager
-    #    suggestion_label = tk.Label(root, text="Select your suggestion:")
-    #    suggestion_label.grid(row=0, column=0, pady=5)
-#
-    #    # Create suggestion buttons
-    #    head_button = tk.Button(root, text="Heads", command=lambda: self.toss_coin("Heads"))
-    #    head_button.grid(row=0, column=1, pady=5)
-#
-    #    tail_button = tk.Button(root, text="Tails", command=lambda: self.toss_coin("Tails"))
-    #    tail_button.grid(row=0, column=2, pady=5)
-#
-    #    result_label = tk.Label(root, text="Result: ")
-    #    result_label.grid(row=0, column=3, pady=10)
  
     def erase_message(self):
         self.label.config(text="")
@@ -165,6 +147,7 @@ class GridA:
             self.computer_attack()
             self.player_attack()
             self.decision()
+        return 0
 
     def create_grid(self):
 
