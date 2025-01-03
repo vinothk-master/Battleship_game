@@ -56,15 +56,24 @@ class Testing_GridA:#TO test the battleship game
     def ship_size(self):
         print("the length of the ship is : ", len(self.ships))
         return len(self.ships)
+    
+
+
 
 class GridA:
     def __init__(self, root, player_ship_positions, coin_toss_winner):
         self.root = root
+        self.row_list = []
+        self.column_list = []
+        self.war_ship = []
+        self.overlapping_cells = []
+        self.tuple_list = []
         self.root.title("Matrix Game")
         self.clicked_row = None
         self.clicked_col = None
         self.result = None  # To store the result of the second attempt
         self.create_grid()
+        
         self.ship_positions = player_ship_positions
 
         self.player()
@@ -77,7 +86,6 @@ class GridA:
         self.counter_d2 = []
         self.counter_s1 = []
         self.counter_s2 = []
-        
         self.our_sank_ships = []
         self.our_zone_attacked =[]
         self.shipwreck_ac=[]
@@ -87,6 +95,7 @@ class GridA:
         self.shipwreck_d2 = []
         self.shipwreck_s1 = []
         self.shipwreck_s2 = []
+        
         self.winner = coin_toss_winner
 
         self.messsage_label = tk.Label(root, text="")
@@ -152,62 +161,44 @@ class GridA:
 
     def create_grid(self):
 
-        my_list= []
-        # Creating Computer's grid
-        my_list2 = []
-        ac_valid, ac_invalid, ac_bow, ac_side, ac_allignment, ac_row, ac_column = self.ships("Aircraft_carrier", 4, 5)
-        b_valid, b_invalid, b_bow, b_side, b_allignment, b_row, b_column  = self.ships("Battleship",3,4)
-        c_valid, c_invalid, c_bow, c_side, c_allignment, c_row, c_column = self.ships("Cruiser",2,3)
-        d_valid, d_invalid, d_bow, d_side, d_allignment, d_row, d_column = self.ships("Destroyer1",1,2)
-        d2_valid, d2_invalid, d2_bow, d2_side, d2_allignment, d2_row, d2_column = self.ships("Destroyer2",3,2)
-        s_valid, s_invalid, s_bow, s_side, s_allignment, s_row, s_column = self.ships("Submarine1",7,1)
-        s2_valid, s2_invalid, s2_bow, s2_side, s2_allignment, s2_row, s2_column = self.ships("Submarine2",8,1)
-        row_list  = []
-        column_list =[]
-        frac, fcac, tupe_list1, aircraft_carrier = self.orientation(row_list, column_list, ac_row, ac_column, my_list)
-        frb, fcb, tupe_list2, battleship = self.orientation(frac, fcac, b_row, b_column, tupe_list1)
-        frc, fcc, tupe_list3, cruiser = self.orientation(frb, fcb, c_row, c_column, tupe_list2)          
-        frd, fcd, tupe_list4, destroyer1 = self.orientation(frc, fcc, d_row, d_column, tupe_list3)
-        frd2, fcd2, tupe_list5, destroyer2 = self.orientation(frd, fcd, d2_row, d2_column, tupe_list4)
-        frs, fcs, tupe_list6, submarine1 = self.orientation(frd2, fcd2, s_row, s_column, tupe_list5)
-        row_check, column_check, final_tupe, submarine2 = self.orientation(frs, fcs, s2_row, s2_column, tupe_list6)
-        print("TUPE: ", final_tupe)
-        overlapping = self.check_for_overlapping(final_tupe)
         RED = "\033[31m"
         RESET = "\033[0m"
         GREEN = "\033[32m"
-        if len(overlapping) >=1:
+        self.ships("Aircraft_carrier", 4, 5)
+        self.ships("Battleship",3,4)
+        self.ships("Cruiser",2,3)
+        self.ships("Destroyer1",1,2)
+        self.ships("Destroyer2",3,2)
+        self.ships("Submarine1",7,1)
+        self.ships("Submarine2",8,1)     
+        print("TUPE: ", self.tuple_list)
+        self.check_for_overlapping()
+
+        if len(self.overlapping_cells) >=1:
             text_to_colorize1 = "Overlapping"
             colored_text = f"{RED}{text_to_colorize1}{RESET}"
-            print(">>>>>>>>>>>>>>>>>>"+str(overlapping)+"<<<<<<<<<<<<<<<<<<<<<<<<<<")
+            print(">>>>>>>>>>>>>>>>>>"+str(self.overlapping_cells)+"<<<<<<<<<<<<<<<<<<<<<<<<<<")
             print(colored_text)
+            self.overlapping_cells = []
+            self.tuple_list = []
             self.create_grid()
+
         else:
             text_to_colorize2 = "NOTTOverlapping"
             colored_text = f"{GREEN}{text_to_colorize2}{RESET}"
             print(colored_text)
             print("NOT")
-            print("final_tupe:", final_tupe)
-            print(ac_valid, ac_invalid, ac_bow, ac_side, ac_allignment,ac_row, ac_column, aircraft_carrier) 
-            print(b_valid, b_invalid, b_bow, b_side, b_allignment, b_row, b_column, battleship)
-            print(c_valid, c_invalid, c_bow, c_side, c_allignment, c_row, c_column, cruiser)
-            print(d_valid, d_invalid, d_bow, d_side, d_allignment, d_row, d_column, destroyer1)
-            print(d2_valid, d2_invalid, d2_bow, d2_side, d2_allignment, d2_row, d2_column, destroyer2) 
-            print(s_valid, s_invalid, s_bow, s_side, s_allignment, s_row, s_column, submarine1) 
-            print(s2_valid, s2_invalid, s2_bow, s2_side, s2_allignment, s2_row, s2_column, submarine2)    
-            print(row_check, column_check)
-            self.final_tupe = final_tupe
-            self.aircraft_carrier =aircraft_carrier
-            self.battleship = battleship
-            self.cruiser = cruiser
-            self.destroyer1 = destroyer1
-            self.destroyer2 = destroyer2
-            self.submarine1 =submarine1
-            self.submarine2 = submarine2
-            print("FINAL_TUPE",self.final_tupe)
+            print("final_tupe:", self.tuple_list)
+            self.aircraft_carrier = self.tuple_list[0:5]
+            self.battleship = self.tuple_list[5:9]
+            self.cruiser = self.tuple_list[9:12]
+            self.destroyer1 = self.tuple_list[12:14]
+            self.destroyer2 = self.tuple_list[14:16]
+            self.submarine1 = self.tuple_list[16:17]
+            self.submarine2 = self.tuple_list[17:18]
 
     def play(self, even):
-        try:
+        try: 
             print("EVENT: ", even)
             if even =="MISS":
                 print("playing music")
@@ -215,7 +206,6 @@ class GridA:
                 print("Playeddddddddddd")
         except:
             pass
-            
 
     def ships(self, ship_type, ship_side, ship_stern):
         position = ["Horizontal", "Vertical"]
@@ -227,53 +217,38 @@ class GridA:
         bow = random.randint(0, 9)
         for c in range(len(valid)):
             ship_base.remove(valid[c])
-        invalid = ship_base.copy()
+        self.invalid = ship_base.copy()
         if ch == "Vertical":
-            final_row = valid
-            final_column= bow        
+            self.final_row = valid
+            self.final_column= bow        
         else:
-            final_row = bow
-            final_column = valid
-        return valid, invalid, bow, side, ch, final_row, final_column
-
-    def orientation(self, rl, cl, r, c, tuple_list):
-        war_ship = []
+            self.final_row = bow
+            self.final_column = valid
+        print("self.final_row, self.final_column: ", self.final_row, self.final_column)
         my_tupe = " "
-        if type(r).__name__ =="list":
-            rl = rl+r
-            for k in range(len(r)):
-                my_tupe = (r[k], c)
-                tuple_list.append(my_tupe)
-                war_ship.append(my_tupe)
+        if type(self.final_row).__name__ =="list":
+            self.row_list = self.row_list+self.final_row
+            for k in range(len(self.final_row)):
+                my_tupe = (self.final_row[k], self.final_column)
+                self.tuple_list.append(my_tupe)
+                self.war_ship.append(my_tupe)
         else:
-            rl.append(r)
-        if type(c).__name__ =="list":
-            cl = cl+c
-            for m in range(len(c)):
-                my_tupe = (r, c[m])
-                tuple_list.append(my_tupe)
-                war_ship.append(my_tupe)
+            self.row_list.append(self.final_row)
+        if type(self.final_column).__name__ =="list":
+            self.column_list = self.column_list+self.final_column
+            for m in range(len(self.final_column)):
+                my_tupe = (self.final_row, self.final_column[m])
+                self.tuple_list.append(my_tupe)
+                self.war_ship.append(my_tupe)
         else:
-            cl.append(c)        
-        return rl, cl, tuple_list, war_ship
-    def attack(self, target, final_tupe, flag1):
-        if target in final_tupe:
-            flag1 = 1
-        elif target not in final_tupe:
-            flag1 =0
-        return flag1
-    def check_for_overlapping(self, final_tupe):
+            self.column_list.append(self.final_column)        
+
+    def check_for_overlapping(self):
         visited =[]
-        overlapping_cells = []
-
-        for cell in final_tupe:
+        for cell in self.tuple_list:
             if cell in visited:
-                overlapping_cells.append(cell)
+                self.overlapping_cells.append(cell)
             visited.append(cell)
-
-        return overlapping_cells
-
-
     def player_attack(self):
         new_list = []
         value = f"Value\n({self.clicked_row}, {self.clicked_col})"
@@ -281,15 +256,14 @@ class GridA:
         flag1,success,flag5 =0,0,0
 
         target = (self.clicked_row,self.clicked_col)
-        success=self.attack(target, self.final_tupe, flag1)
-        print("SUCCESS: ", success)
-        if success ==1:
+
+        if target in self.tuple_list:
             event = "HIT"
             self.play(event)
             value = "X"
             self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(text="X")
             self.messsage_label.config(text="HIT")
-        else:
+        elif target not in self.tuple_list:
             event = "MISS"
             self.play(event)
             self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(text="O", bg = "blue")
@@ -366,6 +340,8 @@ class GridA:
                 self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(bg = "light blue")    
         print(self.attacked)
         print("Sank_ships:", self.sank_ships)
+
+
         
 # Player's move on Computer's grid
     def computer_attack(self):
@@ -377,13 +353,11 @@ class GridA:
         if target1 in self.ship_positions:
             print("HIT HAHA")
             self.our_sank_ships.append(target1)
-            self.matrix_A.matrix[self.random_row][self.random_col].config(text="X")
-            self.matrix_A.matrix[self.random_row][self.random_col].config(text="O", fg="blue", bg="lightgrey")
+            self.matrix_A.matrix[self.random_row][self.random_col].config(text="X", fg="red", bg="lightgrey")
             
         elif target1 not in self.our_zone_attacked:
             print("MISS")
-            self.matrix_A.matrix[self.random_row][self.random_col].config(text="O")
-            self.matrix_A.matrix[self.random_row][self.random_col].config(text="X", fg="red")
+            self.matrix_A.matrix[self.random_row][self.random_col].config(text="O", fg="blue")
         if target1 not in self.our_zone_attacked:
             self.our_zone_attacked.append(target1)
         print(self.our_sank_ships)
