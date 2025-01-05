@@ -4,6 +4,7 @@ import random
 import tkinter.messagebox
 from random import choice
 from ui import main
+from ui import BattleshipGame
 
 class Matrix:
     def __init__(self, root, row, column, matrix_name, grid_a_instance):
@@ -31,7 +32,7 @@ class Matrix:
         self.matrix_name = matrix_name
 
     def on_cell_click(self, row, col):
-        print(f"{self.matrix_name} Clicked: ({row}, {col}), Sequence: {self.sequence}")
+     #   print(f"{self.matrix_name} Clicked: ({row}, {col}), Sequence: {self.sequence}")
         self.sequence += 1
 
         # Store the clicked row and column in the GridA instance
@@ -51,10 +52,10 @@ class Testing_GridA:#TO test the battleship game
     def ship_add(self, val):
         self.ships = []
         self.ships.append(val)
-        print("Executing the line")
+     #   print("Executing the line")
 
     def ship_size(self):
-        print("the length of the ship is : ", len(self.ships))
+     #   print("the length of the ship is : ", len(self.ships))
         return len(self.ships)
     
 
@@ -62,7 +63,16 @@ class Testing_GridA:#TO test the battleship game
 
 class GridA:
     def __init__(self, root, player_ship_positions, coin_toss_winner):
+        
+        self.count =0
         self.root = root
+        self.counter_ac=[]
+        self.counter_b = []
+        self.counter_c = []
+        self.counter_d1 = []
+        self.counter_d2 = []
+        self.counter_s1 = []
+        self.counter_s2 = []
         self.row_list = []
         self.column_list = []
         self.war_ship = []
@@ -73,29 +83,28 @@ class GridA:
         self.clicked_col = None
         self.result = None  # To store the result of the second attempt
         self.create_grid()
-        
         self.ship_positions = player_ship_positions
+        self.player_aircraft_carrier = self.player_ship_positions[0:5]
+        self.player_battleship = self.player_ship_positions[5:9]
+        self.player_cruiser = self.player_ship_positions[9:12]
+        self.player_destroyer1 = self.player_ship_positions[12:14]
+        self.player_destroyer2 = self.player_ship_positions[14:16]
+        self.player_submarine1 = self.player_ship_positions[16:17]
+        self.player_submarine2 = self.player_ship_positions[17:18]
+        print("self.computer_aircraft_carrier: ", self.computer_aircraft_carrier)
+        self.computer_ships_at_war = {"Aircraft_carrier": {"color": 'Red', "Ship": "self.aircraft_carrier", "counter":"self.counter_ac"}, 
+                        "Bttleship" :{"color":"Green", "Ship":"self.battleship", "counter":"self.counter_b"}, 
+                        "Cruiser":{"color": "Blue", "Ship": "self.cruiser", "counter":"self.counter_c"}, 
+                        "Destroyer1":{"color":"Yellow", "Ship":"self.destroyer1", "counter":"self.counter_d1"},
+                        "Destroyer2":{"color":"Orange", "Ship":"self.destroyer2", "counter":"self.counter_d2"},
+                        "Submarine1":{"color":"Grey","Ship":"self.submarine1", "counter":"self.counter_s1"},
+                        "Submarine2":{"color":"Brown", "Ship":"self.submarine2", "counter":"self.counter_s2"}}
 
         self.player()
         self.sank_ships = []
         self.attacked =[]
-        self.counter_ac=[]
-        self.counter_b = []
-        self.counter_c = []
-        self.counter_d1 = []
-        self.counter_d2 = []
-        self.counter_s1 = []
-        self.counter_s2 = []
         self.our_sank_ships = []
-        self.our_zone_attacked =[]
-        self.shipwreck_ac=[]
-        self.shipwreck_b = []
-        self.shipwreck_c = []
-        self.shipwreck_d1 = []
-        self.shipwreck_d2 = []
-        self.shipwreck_s1 = []
-        self.shipwreck_s2 = []
-        
+        self.our_zone_attacked =[]        
         self.winner = coin_toss_winner
 
         self.messsage_label = tk.Label(root, text="")
@@ -125,37 +134,47 @@ class GridA:
         self.war_zone()
 
     def war_zone(self):
-        print("Clicked Row in war_zone:", self.clicked_row)
-        print("Clicked Column in war_zone:", self.clicked_col)
-        print("Matrix A:", self.matrix_A.matrix[0][0])
+     #   print("Clicked Row in war_zone:", self.clicked_row)
+     #   print("Clicked Column in war_zone:", self.clicked_col)
+    #    print("Matrix A:", self.matrix_A.matrix[0][0])
 
         # Print "X" in any one of the cells in Matrix B
-        print(f"Set 'X' in Matrix B at ({self.clicked_row}, {self.clicked_col})")
+     #   print(f"Set 'X' in Matrix B at ({self.clicked_row}, {self.clicked_col})")
 
         # Print the result of the second attempt
-        print(f"Second Attempt Result: {self.result}")
+    #    print(f"Second Attempt Result: {self.result}")
 
         # Reset the state of Matrix A and Matrix B for multiple clicks
         self.matrix_A.reset()
         self.matrix_B.reset()
 
-        print(self.value)
+     #   print(self.value)
     # Sequencing the turns
     def print_clicked_values(self):
-        print("Clicked Row in GridA:", self.clicked_row)
-        print("Clicked Column in GridA:", self.clicked_col)
+    #    print("Clicked Row in GridA:", self.clicked_row)
+    #    print("Clicked Column in GridA:", self.clicked_col)
         
         if self.winner == 1:
             self.random_row = random.randint(0, 9)
             self.random_col = random.randint(0, 9)
-            self.player_attack()
-            self.computer_attack()
+            self.target = (self.clicked_row,self.clicked_col)
+            self.who = "Player"
+            self.start_attack()
+            self.target = (self.random_row,self.random_col)
+            self.who = "Computer"
+            self.start_attack()
+
+            #self.computer_attack()
             self.decision()
         else:
             self.random_row = random.randint(0, 9)
             self.random_col = random.randint(0, 9)
-            self.computer_attack()
-            self.player_attack()
+            self.target = (self.clicked_row,self.clicked_col)
+            self.who = "Player"
+            self.start_attack()
+            self.target = (self.random_row,self.random_col)
+            self.who = "Computer"
+            self.start_attack()
             self.decision()
         return 0
 
@@ -164,21 +183,24 @@ class GridA:
         RED = "\033[31m"
         RESET = "\033[0m"
         GREEN = "\033[32m"
-        self.ships("Aircraft_carrier", 4, 5)
-        self.ships("Battleship",3,4)
-        self.ships("Cruiser",2,3)
-        self.ships("Destroyer1",1,2)
-        self.ships("Destroyer2",3,2)
-        self.ships("Submarine1",7,1)
-        self.ships("Submarine2",8,1)     
-        print("TUPE: ", self.tuple_list)
+        ships_at_war = {"Aircraft_carrier": {"Front":4, "Size":5}, 
+                        "Battleship" :{"Front":3, "Size":4}, 
+                        "Cruiser":{"Front": 2, "Size": 3}, 
+                        "Destroyer1":{"Front":1, "Size":2},
+                        "Destroyer2":{"Front":3, "Size":2},"Submarine1":{"Front":7,"Size":1},"Submarine2" : {"Front":8, "Size":1}}
+        for ship_type in ships_at_war:
+            self.ships(ship_type, ships_at_war[ship_type]["Front"], ships_at_war[ship_type]["Size"])
+
+
+    
+     #   print("TUPE: ", self.tuple_list)
         self.check_for_overlapping()
 
         if len(self.overlapping_cells) >=1:
             text_to_colorize1 = "Overlapping"
             colored_text = f"{RED}{text_to_colorize1}{RESET}"
-            print(">>>>>>>>>>>>>>>>>>"+str(self.overlapping_cells)+"<<<<<<<<<<<<<<<<<<<<<<<<<<")
-            print(colored_text)
+     #       print(">>>>>>>>>>>>>>>>>>"+str(self.overlapping_cells)+"<<<<<<<<<<<<<<<<<<<<<<<<<<")
+      #      print(colored_text)
             self.overlapping_cells = []
             self.tuple_list = []
             self.create_grid()
@@ -186,8 +208,8 @@ class GridA:
         else:
             text_to_colorize2 = "NOTTOverlapping"
             colored_text = f"{GREEN}{text_to_colorize2}{RESET}"
-            print(colored_text)
-            print("NOT")
+     #       print(colored_text)
+     #       print("NOT")
             print("final_tupe:", self.tuple_list)
             self.aircraft_carrier = self.tuple_list[0:5]
             self.battleship = self.tuple_list[5:9]
@@ -224,7 +246,7 @@ class GridA:
         else:
             self.final_row = bow
             self.final_column = valid
-        print("self.final_row, self.final_column: ", self.final_row, self.final_column)
+    #    print("self.final_row, self.final_column: ", self.final_row, self.final_column)
         my_tupe = " "
         if type(self.final_row).__name__ =="list":
             self.row_list = self.row_list+self.final_row
@@ -249,99 +271,164 @@ class GridA:
             if cell in visited:
                 self.overlapping_cells.append(cell)
             visited.append(cell)
-    def player_attack(self):
-        new_list = []
-        value = f"Value\n({self.clicked_row}, {self.clicked_col})"
-        value = "X"
-        flag1,success,flag5 =0,0,0
-
-        target = (self.clicked_row,self.clicked_col)
-
-        if target in self.tuple_list:
-            event = "HIT"
-            self.play(event)
-            value = "X"
-            self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(text="X")
-            self.messsage_label.config(text="HIT")
-        elif target not in self.tuple_list:
-            event = "MISS"
-            self.play(event)
-            self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(text="O", bg = "blue")
-            self.messsage_label.config(text="MISS")
-    
-        if target in self.attacked:
-            print("select some other cell")
-            
-        elif target not in self.attacked:
-            
-
-            print("SELF_ATTACKED:", self.attacked, target, new_list)
-            
-            self.attacked.append(target)
-            if target in self.aircraft_carrier:
-                self.counter_ac.append(target)
-                self.sank_ships.append(target)
-                # You sank my aircraft carrier
-                print("COUNTER_AC: ", self.counter_ac)
-                self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(bg ="RED")
-                if len(self.counter_ac) == len(self.aircraft_carrier):
-                    tk.messagebox.showinfo("Destroyed", "You Sank My Aircraft Carrier")
-             
-            elif target in self.battleship:
-                new_list.append(target)
-               # You sank my battleship 
-                self.counter_b.append(target)
-                self.sank_ships.append(target)
-                if len(self.counter_b) == len(self.battleship):
-                    print(">>>Battleship Destroyed<<<")
-                    tk.messagebox.showinfo("Destroyed", "You Sank My Battleship")
-                self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(bg ="green")
-            elif target in self.cruiser:
-                self.counter_c.append(target)
-                self.sank_ships.append(target)
-                # You sank my cruiser
-                if len(self.counter_c) == len(self.cruiser):
-                    print(">>>Cruiser Destroyed<<<")
-                    tk.messagebox.showinfo("Destroyed", "You Sank My Cruiser")
-                self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(bg = "violet")
-            elif target in self.destroyer1:
-                self.counter_d1.append(target)
-                self.sank_ships.append(target)
-                # You sank my destroyer1
-                if len(self.counter_d1) == len(self.destroyer1):
-                    print(">>>Destroyer1 Destroyed<<<")
-                    tk.messagebox.showinfo("Destroyed", "You Sank My Destroyer1")
-
-                self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(bg = "yellow")
-            elif target in self.destroyer2:
-                self.counter_d2.append(target)
-                self.sank_ships.append(target)
-                # You sank my Destroyer2
-                if len(self.counter_d2) == len(self.destroyer2):
-                    print(">>>Destroyer2 Destroyed<<<")
-                    tk.messagebox.showinfo("Destroyed", "You Sank My Destroyer2")
-                self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(bg = "orange")
-            elif target in self.submarine1:
-                self.counter_s1.append(target)
-                self.sank_ships.append(target)
-                # You sank my Submarine1
-                if len(self.counter_s1) == len(self.submarine1):
-                    print(">>>Submarine1 Destroyed<<<")
-                    tk.messagebox.showinfo("Destroyed", "You Sank My Submarine1")
-                self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(bg = "grey")
-            elif target in self.submarine2:
-                self.counter_s2.append(target)
-                self.sank_ships.append(target)
-                # You sank my Submarine2
-                if len(self.counter_s2) == len(self.submarine2):
-                    print(">>>Submarine2 Destroyed<<<")
-                    tk.messagebox.showinfo("Destroyed", "You Sank My Submarine2")
-
-                self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(bg = "light blue")    
-        print(self.attacked)
-        print("Sank_ships:", self.sank_ships)
 
 
+    def start_attack(self):
+        if self.who =="Player":
+            if self.target not in self.attacked:
+                self.attacked.append(self.target)
+                self.sank_ships.append(self.target)
+                if self.target in self.tuple_list:
+                    self.sank_ships.append(self.target)
+                    for deck in self.computer_ships_at_war:
+                       if self.target in self.computer_ships_at_war[deck]["Ship"]:
+                           self.computer_ships_at_war[deck]["counter"].append(self.target)
+                           self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(text="X", bg = str(self.computer_ships_at_war[deck]["color"]))
+                           if len(self.computer_ships_at_war[deck]["counter"]) == len(self.computer_ships_at_war[deck]["Ship"]):
+                               print("You sank my "+str(deck))
+                elif self.target not in self.tuple_list:
+                    self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(text="O", bg = "black")
+                    self.messsage_label.config(text="MISS")
+            elif self.target in self.attacked:
+                print("Please choose the different cell !!")   
+
+
+
+                
+#                if self.target in self.aircraft_carrier:
+#                        self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(text="X", bg = "RED")
+#                        self.messsage_label.config(text="HIT")
+#                        self.counter_ac.append(self.target)
+#                        if len(self.counter_ac) == len(self.aircraft_carrier):
+#                            tk.messagebox.showinfo("Destroyed", "You Sank My Aircraft Carrier")
+#                if self.target in self.battleship:
+#                        self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(text="X", bg = "RED")
+#                        self.messsage_label.config(text="HIT")
+#                        self.counter_b.append(self.target)
+#                        if len(self.counter_b) == len(self.battleship):
+#                            tk.messagebox.showinfo("Destroyed", "You Sank My Battleship")
+#                if self.target in self.cruiser:
+#                        self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(text="X", bg = "RED")
+#                        self.messsage_label.config(text="HIT")
+#                        self.counter_c.append(self.target)
+#                        if len(self.counter_c) == len(self.cruiser):
+#                            tk.messagebox.showinfo("Destroyed", "You Sank My Cruiser")
+#                if self.target in self.destroyer1:
+#                        self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(text="X", bg = "RED")
+#                        self.messsage_label.config(text="HIT")
+#                        self.counter_d1.append(self.target)
+#                        if len(self.counter_d1) == len(self.destroyer1):
+#                            tk.messagebox.showinfo("Destroyed", "You Sank My Destroyer 1")
+#                if self.target in self.destroyer2:
+#                        self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(text="X", bg = "RED")
+#                        self.messsage_label.config(text="HIT")
+#                        self.counter_d2.append(self.target)
+#                        if len(self.counter_d2) == len(self.destroyer2):
+#                            tk.messagebox.showinfo("Destroyed", "You Sank My Destroyer2")
+#                if self.target in self.submarine1:
+#                        self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(text="X", bg = "RED")
+#                        self.messsage_label.config(text="HIT")
+#                        self.counter_s1.append(self.target)
+#                        if len(self.counter_s1) == len(self.submarine1):
+#                            tk.messagebox.showinfo("Destroyed", "You Sank My Submarine 1")
+#                if self.target in self.submarine2:
+#                        self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(text="X", bg = "RED")
+#                        self.messsage_label.config(text="HIT")
+#                        self.counter_s2.append(self.target)
+#                        if len(self.counter_s2) == len(self.submarine2):
+#                            tk.messagebox.showinfo("Destroyed", "You Sank My Submarine2")
+
+   
+
+    #def player_attack(self):
+    #    new_list = []
+    #    value = f"Value\n({self.clicked_row}, {self.clicked_col})"
+#
+    #    target = (self.clicked_row,self.clicked_col)
+#
+    #    if target in self.tuple_list:
+    #        event = "HIT"
+    #       # self.play(event)
+    #        value = "X"
+    #        self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(text="X")
+    #        self.messsage_label.config(text="HIT")
+    #    elif target not in self.tuple_list:
+    #        event = "MISS"
+    #     #   self.play(event)
+    #        self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(text="O", bg = "blue")
+    #        self.messsage_label.config(text="MISS")
+    #
+    #    if target in self.attacked:
+    #        print("select some other cell")
+    #        
+    #    elif target not in self.attacked:
+    #        
+#
+    #        print("SELF_ATTACKED:", self.attacked, target, new_list)
+    #        
+    #        self.attacked.append(target)
+    #        if target in self.aircraft_carrier:
+    #            self.counter_ac.append(target)
+    #            self.sank_ships.append(target)
+    #            # You sank my aircraft carrier
+    #    #        print("COUNTER_AC: ", self.counter_ac)
+    #            self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(bg ="RED")
+    #            if len(self.counter_ac) == len(self.aircraft_carrier):
+    #                tk.messagebox.showinfo("Destroyed", "You Sank My Aircraft Carrier")
+    #         
+    #        elif target in self.battleship:
+    #            new_list.append(target)
+    #           # You sank my battleship 
+    #            self.counter_b.append(target)
+    #            self.sank_ships.append(target)
+    #            if len(self.counter_b) == len(self.battleship):
+    #      #          print(">>>Battleship Destroyed<<<")
+    #                tk.messagebox.showinfo("Destroyed", "You Sank My Battleship")
+    #            self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(bg ="green")
+    #        elif target in self.cruiser:
+    #            self.counter_c.append(target)
+    #            self.sank_ships.append(target)
+    #            # You sank my cruiser
+    #            if len(self.counter_c) == len(self.cruiser):
+    #       #         print(">>>Cruiser Destroyed<<<")
+    #                tk.messagebox.showinfo("Destroyed", "You Sank My Cruiser")
+    #            self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(bg = "violet")
+    #        elif target in self.destroyer1:
+    #            self.counter_d1.append(target)
+    #            self.sank_ships.append(target)
+    #            # You sank my destroyer1
+    #            if len(self.counter_d1) == len(self.destroyer1):
+    #       #         print(">>>Destroyer1 Destroyed<<<")
+    #                tk.messagebox.showinfo("Destroyed", "You Sank My Destroyer1")
+#
+    #            self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(bg = "yellow")
+    #        elif target in self.destroyer2:
+    #            self.counter_d2.append(target)
+    #            self.sank_ships.append(target)
+    #            # You sank my Destroyer2
+    #            if len(self.counter_d2) == len(self.destroyer2):
+    #       #         print(">>>Destroyer2 Destroyed<<<")
+    #                tk.messagebox.showinfo("Destroyed", "You Sank My Destroyer2")
+    #            self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(bg = "orange")
+    #        elif target in self.submarine1:
+    #            self.counter_s1.append(target)
+    #            self.sank_ships.append(target)
+    #            # You sank my Submarine1
+    #            if len(self.counter_s1) == len(self.submarine1):
+    #        #        print(">>>Submarine1 Destroyed<<<")
+    #                tk.messagebox.showinfo("Destroyed", "You Sank My Submarine1")
+    #            self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(bg = "grey")
+    #        elif target in self.submarine2:
+    #            self.counter_s2.append(target)
+    #            self.sank_ships.append(target)
+    #            # You sank my Submarine2
+    #            if len(self.counter_s2) == len(self.submarine2):
+    #          #      print(">>>Submarine2 Destroyed<<<")
+    #                tk.messagebox.showinfo("Destroyed", "You Sank My Submarine2")
+#
+    #            self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(bg = "light blue")    
+    # #   print(self.attacked)
+    #    print("Sank_ships: ", self.sank_ships)
         
 # Player's move on Computer's grid
     def computer_attack(self):
@@ -349,19 +436,21 @@ class GridA:
         
         target1 = (self.random_row,self.random_col)
 
-        print("SUCCESS: ", success)
-        if target1 in self.ship_positions:
-            print("HIT HAHA")
-            self.our_sank_ships.append(target1)
-            self.matrix_A.matrix[self.random_row][self.random_col].config(text="X", fg="red", bg="lightgrey")
-            
-        elif target1 not in self.our_zone_attacked:
-            print("MISS")
-            self.matrix_A.matrix[self.random_row][self.random_col].config(text="O", fg="blue")
-        if target1 not in self.our_zone_attacked:
-            self.our_zone_attacked.append(target1)
-        print(self.our_sank_ships)
-        print(self.our_zone_attacked)
+    #    if target1 in self.ship_positions:
+    #        if target1 not in self.our_sank_ships:
+    #            self.count = self.count+1
+    #            print("HIT HAHA", self.count)
+    #            self.our_sank_ships.append(target1)
+    #            self.matrix_A.matrix[self.random_row][self.random_col].config(text="X", fg="red", bg="black")
+    #        
+    #    elif target1 not in self.ship_positions:
+    #        print("MISS")
+    #        self.matrix_A.matrix[self.random_row][self.random_col].config(text="O", fg="blue", bg="orange")
+    #    #if target1 not in self.our_zone_attacked:
+    #        self.our_zone_attacked.append(target1)
+    #    print("ship_positions : ", self.ship_positions)
+    #    print("OUR_SANK_SHIPS: ", self.our_sank_ships)
+        #print(self.our_zone_attacked)
 
     def quit_or_restart(self, result):
         if result:

@@ -234,6 +234,14 @@ class BattleshipGame:
     def add_player_ship_positions(self, position_list):
         for position in position_list:
             self.player_ship_positions.append(position)
+        print("self.ship_positions : ", self.player_ship_positions)
+        self.computer_aircraft_carrier = self.player_ship_positions[0:5]
+        self.computer_battleship = self.player_ship_positions[5:9]
+        self.computer_cruiser = self.player_ship_positions[9:12]
+        self.computer_destroyer1 = self.player_ship_positions[12:14]
+        self.computer_destroyer2 = self.player_ship_positions[14:16]
+        self.computer_submarine1 = self.player_ship_positions[16:17]
+        self.computer_submarine2 = self.player_ship_positions[17:18]
 
 def main():
     root = tk.Tk()
