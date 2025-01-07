@@ -12,7 +12,6 @@ class BattleshipGame:
         self.game = None
         self.next = None
         self.execution_completed = None
-        self.players = ["Player", "AI"]
         self.current_player = None
         self.ship_types = {
             'Aircraft Carrier': {'size': 5, 'count': 1, 'positions': []},
@@ -210,19 +209,21 @@ class BattleshipGame:
         self.start_game()
 
     def start_game(self):
+        self.players = ["Player", "AI"]
     # Perform a coin toss to determine the first player (Player or AI)
-        coin_toss_result = random.choice(['Heads', 'Tails'])
-        if coin_toss_result == 'Heads':
-            self.current_player = 0  # Player goes first
+        self.coin_toss_result = random.choice(['Player', 'Computer'])
+        if self.coin_toss_result == 'Player':
+            self.current_player = 1  # Player goes first
         else:
-            self.current_player = 1  # AI goes first
-
+            self.current_player = 0  # AI goes first
+        
         # Display the result of the coin toss
-        tkinter.messagebox.showinfo("Coin Toss Result", f"{coin_toss_result}! {self.players[self.current_player]} goes first.")
+        tkinter.messagebox.showinfo("Coin Toss Result", f"{self.coin_toss_result}! {self.players[self.current_player]} goes first.")
 
         # Set up the player and AI matrices
         self.clear_screen()
         self.setup_matrices()
+        return self.coin_toss_result
     
     def setup_matrices(self):
         player_ship_positions = self.get_player_ship_positions()
@@ -235,13 +236,7 @@ class BattleshipGame:
         for position in position_list:
             self.player_ship_positions.append(position)
         print("self.ship_positions : ", self.player_ship_positions)
-        self.computer_aircraft_carrier = self.player_ship_positions[0:5]
-        self.computer_battleship = self.player_ship_positions[5:9]
-        self.computer_cruiser = self.player_ship_positions[9:12]
-        self.computer_destroyer1 = self.player_ship_positions[12:14]
-        self.computer_destroyer2 = self.player_ship_positions[14:16]
-        self.computer_submarine1 = self.player_ship_positions[16:17]
-        self.computer_submarine2 = self.player_ship_positions[17:18]
+
 
 def main():
     root = tk.Tk()

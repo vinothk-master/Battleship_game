@@ -81,6 +81,9 @@ class GridA:
         self.result = None  # To store the result of the second attempt
         self.create_grid()
         self.player_ship_positions = player_ship_positions
+        self.players = ["Player", "Computer"]
+        self.winner = self.players[coin_toss_winner]
+        print("WHO IS THE WINNER: ", self.winner)
         self.player_aircraft_carrier = self.player_ship_positions[0:5]
         self.player_battleship = self.player_ship_positions[5:9]
         self.player_cruiser = self.player_ship_positions[9:12]
@@ -107,7 +110,7 @@ class GridA:
         self.player_attacked =[]
         self.our_sank_ships = []
         self.our_zone_attacked =[]         
-        self.winner = coin_toss_winner
+       # self.winner = coin_toss_winner
 
         self.messsage_label = tk.Label(root, text="")
         self.messsage_label.grid(row=0, column=3)
@@ -139,7 +142,7 @@ class GridA:
         self.matrix_A.reset()
         self.matrix_B.reset()
     def print_clicked_values(self):
-        if self.winner == 1:
+        if self.winner == "Player":
             self.random_row = random.randint(0, 9)
             self.random_col = random.randint(0, 9)
             self.target = (self.clicked_row,self.clicked_col)
@@ -153,16 +156,18 @@ class GridA:
             #self.computer_attack()
 
         else:
+            print("COMMPUTERR")
             self.random_row = random.randint(0, 9)
             self.random_col = random.randint(0, 9)
-            self.target = (self.clicked_row,self.clicked_col)
-            self.who = "Player"
-            self.start_attack()
-            self.decision()
             self.target = (self.random_row,self.random_col)
             self.who = "Computer"
             self.start_attack()
             self.decision()
+            self.target = (self.clicked_row,self.clicked_col)
+            self.who = "Player"
+            self.start_attack()
+            self.decision()
+
         return 0
 
     def create_grid(self):
