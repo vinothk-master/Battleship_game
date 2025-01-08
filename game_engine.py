@@ -21,15 +21,21 @@ class Matrix:
         P = tk.Label(root, text="PLAYER")
         P.grid(row=0, column=4, padx = 10, pady=10)
 
-        
-        #comp.pack(pady=5)
+        for r in range(10):
+            for c in range(10):
+                cell_button = tk.Button(self.frame, width=6, height=2)
+                cell_button.grid(row=r, column=c)
+                #self.matrix[r][c] = cell_button
+        self.player_game()
+
+    def player_game(self):
         for r in range(10):
             for c in range(10):
                 cell_button = tk.Button(self.frame, width=6, height=2, command=lambda row=r, col=c: self.on_cell_click(row, col))
                 cell_button.grid(row=r, column=c)
                 self.matrix[r][c] = cell_button
 
-        self.matrix_name = matrix_name
+        #self.matrix_name = matrix_name
 
     def on_cell_click(self, row, col):
      #   print(f"{self.matrix_name} Clicked: ({row}, {col}), Sequence: {self.sequence}")
@@ -48,6 +54,8 @@ class Matrix:
 
     def reset(self):
         self.clicked = False
+
+
 class Testing_GridA:#TO test the battleship game 
     def ship_add(self, val):
         self.ships = []
@@ -106,6 +114,8 @@ class GridA:
                         "Submarine1":{"color":"Grey","Ship":self.player_submarine1, "counter":self.computer_counter_s1},
                         "Submarine2":{"color":"Brown", "Ship":self.player_submarine2, "counter":self.computer_counter_s2}}
         self.player()
+        self.computer()
+        self.war_zone()
         self.computer_sank_ships = []
         self.player_attacked =[]
         self.our_sank_ships = []
@@ -131,12 +141,12 @@ class GridA:
 
         space_label = tk.Label(self.root, width=5)
         space_label.grid(row=1, column=3)
-        self.computer()
+        #self.computer()
 
     def computer(self):
         self.matrix_B = Matrix(self.root, row=1, column=4, matrix_name='Matrix B', grid_a_instance=self)
-        self.value = 1
-        self.war_zone()
+        #self.value = 1
+       # self.war_zone()
 
     def war_zone(self):
         self.matrix_A.reset()
@@ -145,6 +155,7 @@ class GridA:
         if self.winner == "Player":
             self.random_row = random.randint(0, 9)
             self.random_col = random.randint(0, 9)
+            #self.player_game()
             self.target = (self.clicked_row,self.clicked_col)
             self.who = "Player"
             self.start_attack()
@@ -163,6 +174,7 @@ class GridA:
             self.who = "Computer"
             self.start_attack()
             self.decision()
+           # self.player_game()
             self.target = (self.clicked_row,self.clicked_col)
             self.who = "Player"
             self.start_attack()
