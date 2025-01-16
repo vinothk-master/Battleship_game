@@ -26,9 +26,10 @@ class Matrix:
                 cell_button = tk.Button(self.frame, width=6, height=2)
                 cell_button.grid(row=r, column=c)
                 #self.matrix[r][c] = cell_button
-        self.player_game()
+      #  self.player_game()
 
     def player_game(self):
+        print("0")
         for r in range(10):
             for c in range(10):
                 cell_button = tk.Button(self.frame, width=6, height=2, command=lambda row=r, col=c: self.on_cell_click(row, col))
@@ -38,6 +39,7 @@ class Matrix:
         #self.matrix_name = matrix_name
 
     def on_cell_click(self, row, col):
+        print("1")
      #   print(f"{self.matrix_name} Clicked: ({row}, {col}), Sequence: {self.sequence}")
         self.sequence += 1
 
@@ -113,9 +115,12 @@ class GridA:
                         "Destroyer2":{"color":"Orange", "Ship":self.player_destroyer2, "counter":self.computer_counter_d2},
                         "Submarine1":{"color":"Grey","Ship":self.player_submarine1, "counter":self.computer_counter_s1},
                         "Submarine2":{"color":"Brown", "Ship":self.player_submarine2, "counter":self.computer_counter_s2}}
+        #self.calling_Matrix_class = Matrix(None, None, None, None, None)
+        
         self.player()
         self.computer()
         self.war_zone()
+        self.gameplay()
         self.computer_sank_ships = []
         self.player_attacked =[]
         self.our_sank_ships = []
@@ -125,15 +130,9 @@ class GridA:
         self.messsage_label = tk.Label(root, text="")
         self.messsage_label.grid(row=0, column=3)
 
-    def update_message(self, message):
-        self.messsage_label.config(text=message)
-
- 
-    def erase_message(self):
-        self.label.config(text="")
-
 
     def player(self):
+        print("2")
         padding_label = tk.Label(self.root, height=10)
         padding_label.grid(row=0, column=0, columnspan=10)
 
@@ -144,6 +143,7 @@ class GridA:
         #self.computer()
 
     def computer(self):
+        print("3")
         self.matrix_B = Matrix(self.root, row=1, column=4, matrix_name='Matrix B', grid_a_instance=self)
         #self.value = 1
        # self.war_zone()
@@ -151,7 +151,10 @@ class GridA:
     def war_zone(self):
         self.matrix_A.reset()
         self.matrix_B.reset()
+        print("4")
+
     def print_clicked_values(self):
+        print("5")
         if self.winner == "Player":
             self.random_row = random.randint(0, 9)
             self.random_col = random.randint(0, 9)
@@ -181,6 +184,10 @@ class GridA:
             self.decision()
 
         return 0
+    def gameplay(self):
+        print("6")
+        self.matrix_B.player_game()
+      #  self.calling_Matrix_class.player_game()
 
     def create_grid(self):
 
@@ -310,7 +317,7 @@ class GridA:
                                tk.messagebox.showinfo("Destroyed", "Destroyed your "+str(deck1))
                 elif self.target not in self.player_ship_positions:
                     self.matrix_A.matrix[self.random_row][self.random_col].config(text="O", bg = "blue")
-                    self.messsage_label.config(text="MISS")
+                    self.messsage_label.config(text="Miss")
             elif self.target in self.computer_attacked:
                 print("Please choose the different cell !!")
         print("self.our_sank_ships, self.computer_sank_ships :",self.our_sank_ships, self.computer_sank_ships)
