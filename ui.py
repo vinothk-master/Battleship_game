@@ -227,8 +227,8 @@ class BattleshipGame:
     
     def setup_matrices(self):
         player_ship_positions = self.get_player_ship_positions()
-        game_engine.GridA(self.root, player_ship_positions, coin_toss_winner=self.current_player)
-
+        #game_engine.GridA(self.root, player_ship_positions, coin_toss_winner=self.current_player)
+        game_engine.Setup_Matrix(self.root)
     def get_player_ship_positions(self):
         return self.player_ship_positions
     

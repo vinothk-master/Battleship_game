@@ -7,7 +7,8 @@ from random import choice
 #from ui import BattleshipGame
 
 class Game_Matrix:
-    def __init__(self, root, row, column, matrix_name, grid_a_instance):
+    def __init__(self, root, row, column, matrix_name, grid_instance):
+        self.grid_instance = grid_instance
         self.frame = tk.Frame(root)
         self.frame.grid(row=row, column=column)
 
@@ -35,24 +36,51 @@ class Setup_Matrix:
         
         padding_label = tk.Label(self.root, height=10)
         padding_label.grid(row=0, column=0, columnspan=10)
-        self.matrix_A = Game_Matrix(self.root, row=1, column=2, matrix_name='Matrix A', grid_a_instance=self)
+        self.matrix_A = Game_Matrix(self.root, row=1, column=2, matrix_name='Matrix A', grid_instance=self)
 
         space_label = tk.Label(self.root, width=5)
         space_label.grid(row=1, column=3)
     def computer(self):
-        self.matrix_B = Game_Matrix(self.root, row=1, column=4, matrix_name='Matrix B', grid_a_instance=self)
+        self.matrix_B = Game_Matrix(self.root, row=1, column=4, matrix_name='Matrix B', grid_instance=self)
         Game_start(self.matrix_A, self.matrix_B)
 
-class Game_start:
+class Game_start(Game_Matrix):
     def __init__(self, matrix_A, matrix_B):
+        #self.grid_instance =grid_instance
+        self.matrix_A = matrix_A
+        self.matrix_B = matrix_B
         val = random.randint(1,2)
         if val == 1:
             self.matrix_A = matrix_A
             print("MA:",self.matrix_A)
+            self.player_game()
         else:
             self.matrix_B = matrix_B
             print("MB:", self.matrix_B)
-    
+            self.player_game()
+    def player_game(self):
+        for r in range(10):
+            for c in range(10):
+                cell_button = tk.Button(self.matrix_B.frame, width=6, height=2, command=lambda row=r, col=c: self.on_cell_click(row, col))
+                cell_button.grid(row=r, column=c)
+                self.matrix_B.matrix[r][c] = cell_button
+    def on_cell_click(self, row, col):
+     #   print(f"{self.matrix_name} Clicked: ({row}, {col}), Sequence: {self.sequence}")
+       # self.sequence += 1
+
+        # Store the clicked row and column in the GridA instance
+        #self.matrix_B.clicked_row = row
+        #self.grid_instance.clicked_col = col
+        print(row, col)
+       
+        # Print row and column in war_zone method
+        
+        #self.grid_a_instance.print_clicked_values()
+        #self.print_clicked_values()
+
+        # Reset the clicked state for multiple clicks
+        self.clicked = False
+
 class Testing_GridA:#TO test the battleship game 
     def ship_add(self, val):
         self.ships = []
