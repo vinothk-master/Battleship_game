@@ -116,8 +116,7 @@ class Matrix:
     def reset(self):
         self.clicked = False
 
-    
-'''
+
 
 class GridA:
     def __init__(self, root, player_ship_positions, coin_toss_winner):
@@ -377,3 +376,4 @@ class GridA:
         else:
             print("NEXT TURN")
 
+'''
