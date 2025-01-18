@@ -191,13 +191,19 @@ class Game_start(Game_Matrix):
         if self.val == 1:
             #self.matrix_A = matrix_A
             print("MA:",self.matrix_A)
-            #self.player_game()
+            self.player_game()
             self.computer_game()
+            #next_turn  = self.decision()
+            #if next_turn == 0:
+            #    self.rotation()
         else:
             #self.matrix_B = matrix_B
             print("MB:", self.matrix_B)
             self.computer_game()
-            #self.player_game()
+            self.player_game()
+            #next_turn =self.decision()
+            #if next_turn == 0:
+            #    self.rotation()
     def computer_game(self):
         self.random_col = random.randint(0,9)
         self.random_row = random.randint(0,9)
@@ -206,10 +212,11 @@ class Game_start(Game_Matrix):
         print("self.target: ", self.target)
         for r in range(10):
             for c in range(10):
-                cell_button1 = tk.Button(self.matrix_B.frame, width=6, height=2)
+                cell_button1 = tk.Button(self.matrix_A.frame, width=6, height=2)
                 cell_button1.grid(row=r, column=c)
+                #print("r,c: ", r,c)
                 self.matrix_A.matrixA[r][c] = cell_button1
-                print("12")
+                #print("12")
         self.start_attack()
 
     def player_game(self):
@@ -242,6 +249,7 @@ class Game_start(Game_Matrix):
 
     def start_attack(self):
         if self.who =="Player":
+            print("13")
             if self.target not in self.player_attacked:
                 self.player_attacked.append(self.target)
                 if self.target in self.tuple_list:
@@ -249,12 +257,12 @@ class Game_start(Game_Matrix):
                     for deck in self.computer_ships_at_war:
                        if self.target in self.computer_ships_at_war[deck]["Ship"]:
                            self.computer_ships_at_war[deck]["counter"].append(self.target)
-                           self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(text="X", bg = str(self.computer_ships_at_war[deck]["color"]))
+                           self.matrix_B.matrixB[self.clicked_row][self.clicked_col].config(text="X", bg = str(self.computer_ships_at_war[deck]["color"]))
                            if len(self.computer_ships_at_war[deck]["counter"]) == len(self.computer_ships_at_war[deck]["Ship"]):
                                print("You sank my "+str(deck))
                                tk.messagebox.showinfo("Destroyed", "You Sank My "+str(deck))
                 elif self.target not in self.tuple_list:
-                    self.matrix_B.matrix[self.clicked_row][self.clicked_col].config(text="O", bg = "blue")
+                    self.matrix_B.matrixB[self.clicked_row][self.clicked_col].config(text="O", bg = "blue")
                     self.messsage_label.config(text="MISS")
             elif self.target in self.player_attacked:
                 print("Please choose the different cell !!")   
@@ -284,12 +292,15 @@ class Game_start(Game_Matrix):
         if len(self.computer_sank_ships) ==18:
             answer = tkinter.messagebox.askyesno(title='confirmation',message='Player Won. Do you want to Restart?')
             self.quit_or_restart(answer)
+            return 1
         elif len(self.our_sank_ships) == 18:
             answer = tkinter.messagebox.askyesno(title='confirmation',message='Computer Won. Do you want to Restart?')
             self.quit_or_restart(answer)
+            return 1
         else:
             print("NEXT TURN")
-            self.rotation()
+            return 0
+           # self.rotation()
 
     def quit_or_restart(self, result):
         if result:
