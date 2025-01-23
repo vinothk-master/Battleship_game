@@ -5,12 +5,14 @@ import tkinter.messagebox
 from random import choice
 from ui import main
 from ui import BattleshipGame
+import threading
 
 class Game_Matrix:
     def __init__(self, root, row, column, matrix_name, grid_instance):
         self.grid_instance = grid_instance
         self.frame = tk.Frame(root)
         self.frame.grid(row=row, column=column)
+        print(row, column)
         if matrix_name == "Matrix A":
             self.matrixA = [[None for _ in range(10)] for _ in range(10)]
         elif matrix_name == "Matrix B":
@@ -54,6 +56,8 @@ class Game_start(Game_Matrix):
         self.matrix_B = matrix_B
         self.player_ship_positions = player_ship_positions
         self.count =0
+        self.cell_clicked = threading.Event()  # Event to signal a click
+        self.selected_cell = None
        # self.root = root
         self.counter_ac, self.counter_b, self.counter_c, self.counter_d1, self.counter_d2, self.counter_s1, self.counter_s2=[],[],[],[],[],[],[]
         self.computer_counter_ac, self.computer_counter_b, self.computer_counter_c, self.computer_counter_d1, self.computer_counter_d2, self.computer_counter_s1, self.computer_counter_s2=[],[],[],[],[],[],[]        
@@ -106,7 +110,8 @@ class Game_start(Game_Matrix):
         self.messsage_label = tk.Label(root, text="")
         self.messsage_label.grid(row=0, column=3)
 
-        self.val = random.randint(1,2)
+        #self.val = random.randint(1,2)
+        self.val = 1
         self.rotation()
 
     def create_grid(self):
@@ -186,24 +191,31 @@ class Game_start(Game_Matrix):
             if cell in visited:
                 self.overlapping_cells.append(cell)
             visited.append(cell)
+    def play(self, even):
+        try: 
+            print("EVENT: ", even)
+            if even =="MISS":
+                print("playing music")
+            elif even == "HIT":
+                print("Playeddddddddddd")
+        except:
+            pass
 
     def rotation(self):
+        max_iterations = 100
+        iteration_count = 0
+        self.current_turn = "player"
         if self.val == 1:
-            #self.matrix_A = matrix_A
-            print("MA:",self.matrix_A)
+            self.who ="Player"
             self.player_game()
-            self.computer_game()
-            #next_turn  = self.decision()
-            #if next_turn == 0:
-            #    self.rotation()
-        else:
-            #self.matrix_B = matrix_B
-            print("MB:", self.matrix_B)
-            self.computer_game()
-            self.player_game()
-            #next_turn =self.decision()
-            #if next_turn == 0:
-            #    self.rotation()
+           # self.start_attack()
+            #self.computer_game()
+            
+            next_turn = self.decision()
+            print("NEXT_TURN :", next_turn)
+
+
+                
     def computer_game(self):
         self.random_col = random.randint(0,9)
         self.random_row = random.randint(0,9)
@@ -225,26 +237,38 @@ class Game_start(Game_Matrix):
                 cell_button = tk.Button(self.matrix_B.frame, width=6, height=2, command=lambda row=r, col=c: self.on_cell_click(row, col))
                 cell_button.grid(row=r, column=c)
                 self.matrix_B.matrixB[r][c] = cell_button
+        threading.Thread(target=self.game_logic, daemon=True).start()
+        print("cell_button: ", cell_button)
 
     def on_cell_click(self, row, col):
         print(row, col)
+        button = self.matrix_B.matrixB[row][col]
+        button.config(state=tk.DISABLED)
+        self.target = (row, col)
         self.clicked_row = row
         self.clicked_col = col
-        self.target = (row, col)
-        self.who ="Player"
         self.start_attack()
-        self.clicked = False
+        
+        self.cell_clicked.set()
+        
+        #self.start_attack()
+        
+        #self.who ="Player"
+        #self.cell_clicked.set()
+        #self.start_attack()
+    def wait_for_click(self):
+           self.cell_clicked.wait()  # Wait until the cell is clicked
+           self.cell_clicked.clear()  # Reset event for the next click
+           print(f"Proceeding with selected cell: {self.target}")
+    def game_logic(self):
+        print("Waiting for a cell to be clicked...")
+        self.wait_for_click()  # Wait for the first click
+        print(f"First click: {self.target}")
 
-
-    def play(self, even):
-        try: 
-            print("EVENT: ", even)
-            if even =="MISS":
-                print("playing music")
-            elif even == "HIT":
-                print("Playeddddddddddd")
-        except:
-            pass
+        print("Waiting for another cell...")
+        self.wait_for_click()  # Wait for the second click
+        print(f"Second click: {self.target}")
+        
 
 
     def start_attack(self):
